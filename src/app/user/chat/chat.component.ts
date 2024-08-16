@@ -15,7 +15,7 @@ export class ChatComponent {
   seeGroupMembesr() {
     this.toSee = !this.toSee
   }
-
+  isGroup = false;
   isCoach: boolean = true;
   role: any;
   newMessage: any;
@@ -56,7 +56,7 @@ export class ChatComponent {
       if (message.chatId === this.currentChatId) {
         this.messageList.push(message);
         this.messageList = this.messageList;
-        this.getChatMessages(this.currentChatId);
+        this.getChatMessages(this.currentChatId, this.isGroup);
         //this.getAllChats();
       }
     });
@@ -117,7 +117,7 @@ export class ChatComponent {
         this.closeModal.nativeElement.click();
         this.openChatId = true;
         if (this.openChatId) {
-          this.getChatMessages(resp.data?.id);
+          this.getChatMessages(resp.data?.id, this.isGroup);
         }
       },
       error: error => {
@@ -135,8 +135,6 @@ export class ChatComponent {
     this.service.getApi(this.isCoach ? `coach/chat` : `user/chat`).subscribe({
       next: resp => {
         this.chatsList = resp.data;
-
-
 
         // Find the chat with the currentChatId
         const currentChat = resp.data.find((chat: { id: any; }) => chat.id === this.currentChatId);
@@ -161,7 +159,12 @@ export class ChatComponent {
 
   currentChatId: any;
 
-  getChatMessages(chatId: any) {
+  getChatMessages(chatId: any, isGroupChat: boolean) {
+    if (isGroupChat == true) {
+      this.isGroup = true
+    } else {
+      this.isGroup = false;
+    }
     this.currentChatId = chatId;
     this.service.getApi(this.isCoach ? `coach/message/${chatId}` : `user/message/${chatId}`).subscribe({
       next: (resp) => {
@@ -200,7 +203,7 @@ export class ChatComponent {
       formURlData.set('content', this.newMessage);
       this.service.postAPI(this.isCoach ? `coach/message/${this.currentChatId}` : `user/message/${this.currentChatId}`, formURlData.toString()).subscribe({
         next: (resp) => {
-          this.getChatMessages(this.currentChatId);
+          this.getChatMessages(this.currentChatId, this.isGroup);
           this.newMessage = '';
           this.isDisabled = false;
         },
