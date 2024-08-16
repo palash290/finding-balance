@@ -1,0 +1,23 @@
+/* @import "../node_modules/bootstrap/dist/css/bootstrap.min.css"; */
+@import "ngx-toastr/toastr";
+
+.error-message {
+  color: red;
+}
+
+div:where(.swal2-container) div:where(.swal2-popup){
+  background-color: #333 !important;
+}
+div:where(.swal2-container) h2:where(.swal2-title),div:where(.swal2-container) .swal2-html-container{
+  color: #fff!important;
+}
+
+div:where(.swal2-icon).swal2-warning{
+  border-color: #e58934 !important;
+  color: #e58934!important;
+}
+
+
+.ct_orange_border_1{
+  border: 1px solid var(--orange);
+}
