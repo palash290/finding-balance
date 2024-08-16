@@ -54,7 +54,20 @@
             <li *ngFor="let chat of chatsList | filter:searchQueryFilter" style="cursor: pointer;">
 
 
-                <div class="d-flex align-items-center gap-2" (click)="getChatMessages(chat.id)">
+                <div class="d-flex align-items-center gap-2" (click)="getChatMessages(chat.id , chat.isGroupChat)">
+
+                    @if (chat.isGroupChat) {
+                    @for (participant of chat.participants; track $index) {
+                    <img [src]="participant?.User?.avatar_url ? participant.User.avatar_url : '/assets/img/np_pro.png'"
+                        alt="" class="ct_img_40 ct_orange_border_1">
+                    }
+
+                    <p class="mb-0 ct_fs_15 text-white ct_ff_roboto ct_fw_500">
+                        {{chat?.name}}
+                    </p>
+                    <span class="text-white ct_fs_14">{{getLimitedText(chat.lastMessage?.content, 4)}}</span>
+
+                    }@else {
                     <!-- Loop through participants of each chat -->
                     <ng-container *ngFor="let participant of chat.participants">
                         <img [src]="participant?.User?.avatar_url ? participant.User.avatar_url : '/assets/img/np_pro.png'"
@@ -64,14 +77,17 @@
                                 {{participant?.User?.full_name || 'Unknown Coach'}}
                             </p>
                             <!-- <p *ngIf="chat.isGroupChat" class="mb-0 ct_fs_15 text-white ct_ff_roboto ct_fw_500">
-                                {{chat.name || 'Unknown Coach'}}
-                            </p> -->
-                            <span class="text-white ct_fs_14">{{getLimitedText(chat.lastMessage?.content, 4)}}</span>
+                                    {{chat.name || 'Unknown Coach'}}
+                                </p> -->
+                            <span class="text-white ct_fs_14">{{getLimitedText(chat.lastMessage?.content,
+                                4)}}</span>
                         </div>
                         <span *ngIf="chat.unreadCount > 0"
                             class="text-white ct_msg_count_12">{{chat.unreadCount}}</span>
                     </ng-container>
+                    }
                 </div>
+
 
                 <!-- <div *ngIf="chat.isGroupChat" class="d-flex align-items-center gap-2" (click)="getChatMessages(chat.id)">
                     <ng-container *ngFor="let participant of chat.participants">
@@ -104,7 +120,7 @@
         <ul class="ct_message_user_lit mt-3" *ngIf="!coachListVisible" (click)="openChat()">
             <!-- add This Class active when chat open  -->
             <li *ngFor="let chat of chatsList | filter:searchQueryFilter" style="cursor: pointer;">
-                <div class="d-flex align-items-center gap-2" (click)="getChatMessages(chat.id)">
+                <div class="d-flex align-items-center gap-2" (click)="getChatMessages(chat.id, chat.isGroupChat)">
                     <!-- Loop through participants of each chat -->
                     <ng-container *ngFor="let participant of chat.participants">
                         <img [src]="participant?.Coach?.avatar_url ? participant.Coach.avatar_url : '/assets/img/np_pro.png'"
@@ -156,11 +172,12 @@
                 <h5 class="mb-0 ct_fs_15 text-white ct_ff_roboto ct_fw_500 mb-2">{{participantFullName}}</h5>
             </div>
             <!-- } -->
-
-            <!-- <div class="ms-auto" style="cursor: pointer;">
+            @if (isGroup == true)  {
+            <div class="ms-auto" style="cursor: pointer;">
                 <p class="mb-0 ct_fs_12 ct_ff_roboto ct_fw_500 ct_orange_text" (click)="seeGroupMembesr()">See All 12
                     Members</p>
-            </div> -->
+            </div>
+            }
 
         </div>
 
@@ -254,7 +271,6 @@
                         </i>
                     </div>
                 </div>
-
             </div>
             } @else {
             <div class="ct_all_team_member_list">
